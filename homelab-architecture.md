@@ -25,7 +25,7 @@ This document describes a self-hosted homelab architecture using:
 - **Actual router IP**: `192.168.8.1`
 - **Validated VPN path**: VPS can reach `192.168.8.1` through Tailscale subnet routing
 - **Validated public edge**: Dokploy / Traefik on VPS is the chosen reverse proxy layer
-- **Validated test app**: `https://test-1.shatori.com` → VPS Dokploy / Traefik → Tailscale → `http://192.168.8.141:3000`
+- **Live route examples and Traefik configs** are documented in `dokploy-traefik-routes.md`
 
 Historical notes about Nginx Proxy Manager below are superseded where they conflict with this section.
 
@@ -70,7 +70,7 @@ Historical notes about Nginx Proxy Manager below are superseded where they confl
                             INTERNET
                                │
                                ▼
-               test-1.shatori.com (DNS → VPS public IP)
+                 public domain (DNS → VPS public IP)
                                │
                                ▼
                           [ VPS ]
@@ -103,7 +103,7 @@ Historical notes about Nginx Proxy Manager below are superseded where they confl
 ### How Access Works (No VPN on Client)
 
 ```
-User browser: test-1.shatori.com
+User browser: public domain
     │
     ▼
 DNS resolves to VPS public IP
@@ -149,7 +149,6 @@ Tailscale → GL.iNet → Minecraft VM
 
 | Domain | Flow |
 |--------|------|
-| test-1.shatori.com | VPS Dokploy / Traefik → Tailscale → GL.iNet → `192.168.8.141:3000` |
 | ha.shatori.com | VPS Dokploy / Traefik → Tailscale → GL.iNet → Home Assistant |
 | plex.shatori.com | VPS Dokploy / Traefik → Tailscale → GL.iNet → Plex |
 | cloud.shatori.com | VPS Dokploy / Traefik → Tailscale → GL.iNet → Nextcloud |
@@ -175,7 +174,7 @@ GL.iNet → Minecraft VM (192.168.8.x)
 - Single public entry point with TLS termination
 - No double proxy layer between internet and Home Lab
 - Easy to point public domains at arbitrary internal services over Tailscale
-- Matches the validated `test-1.shatori.com` setup already working in production
+- Matches the validated Dokploy / Traefik public routing pattern documented in `dokploy-traefik-routes.md`
 
 **VPS role:** Accept public traffic, terminate TLS, then forward to Home Lab through Tailscale subnet routing
 
@@ -243,13 +242,14 @@ GL.iNet → Minecraft VM (192.168.8.x)
 
 | Domain | Service | Internal IP |
 |--------|---------|-------------|
-| test-1.shatori.com | Test app | 192.168.8.141:3000 |
 | ha.shatori.com | Home Assistant | 192.168.8.101:8123 |
 | plex.shatori.com | Plex | 192.168.8.102:32400 |
 | mc.shatori.com | Minecraft | 192.168.8.103:25565 |
 | cloud.shatori.com | Nextcloud | 192.168.8.104:80/443 |
 
 All routing handled by Dokploy / Traefik on VPS.
+
+Live per-application routes and Traefik examples are tracked in `dokploy-traefik-routes.md`.
 
 ---
 
@@ -730,69 +730,6 @@ Use Tailscale for:
 2. **Portability**: GL.iNet with 4G — can move, just plug in cable
 3. **Speed**: Tailscale for yourself — no VPS bottleneck
 4. **Simplicity**: LXC containers, no Kubernetes
-
----
-
-## Validated Dokploy / Traefik Test
-
-The first working public test of the current edge setup is:
-
-```text
-https://test-1.shatori.com
-  → VPS public IP
-  → Dokploy / Traefik on VPS
-  → Tailscale subnet route
-  → GL.iNet LAN
-  → http://192.168.8.141:3000
-```
-
-### Notes
-
-- TLS terminates on the VPS
-- Backend stays on the Home Lab LAN (`192.168.8.x`), not on a `100.x.x.x` Tailscale IP
-- This confirms Dokploy / Traefik can proxy arbitrary Home Lab services over the Tailscale subnet route
-- Future HTTP services should follow the same pattern unless a specific app needs raw TCP/UDP handling
-
-### Traefik Dynamic Configuration Used for the Test
-
-File on VPS:
-
-```text
-/etc/dokploy/traefik/dynamic/homelab-test.yml
-```
-
-```yaml
-http:
-  routers:
-    homelab-test-http:
-      rule: "Host(`test-1.shatori.com`)"
-      entryPoints:
-        - web
-      middlewares:
-        - redirect-to-https
-      service: homelab-test-service
-
-    homelab-test-https:
-      rule: "Host(`test-1.shatori.com`)"
-      entryPoints:
-        - websecure
-      tls:
-        certResolver: letsencrypt
-      service: homelab-test-service
-
-  middlewares:
-    redirect-to-https:
-      redirectScheme:
-        scheme: https
-        permanent: true
-
-  services:
-    homelab-test-service:
-      loadBalancer:
-        servers:
-          - url: "http://192.168.8.141:3000"
-        passHostHeader: true
-```
 
 ---
 
