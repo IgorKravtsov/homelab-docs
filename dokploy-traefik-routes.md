@@ -24,9 +24,9 @@ public domain
 
 | Domain | Service | Internal Target | Notes |
 |--------|---------|-----------------|-------|
-| `test-1.shatori.com` | Test app | `http://192.168.8.141:3000` | First validated public test |
 | `n8n.shatori.com` | n8n | `http://192.168.8.142:5678` | Runs on Raspberry Pi, 8 GB RAM |
 | `draw.shatori.com` | Excalidraw | `http://192.168.8.142:8081` | Runs alongside n8n |
+| `open-web-ui.shatori.com` | Open WebUI | `http://192.168.8.142:3000` | Runs alongside n8n and Excalidraw |
 
 ## Shared Middleware
 
@@ -76,6 +76,22 @@ http:
         certResolver: letsencrypt
       service: draw-service
 
+    open-web-ui-http:
+      rule: "Host(`open-web-ui.shatori.com`)"
+      entryPoints:
+        - web
+      middlewares:
+        - redirect-to-https
+      service: open-web-ui-service
+
+    open-web-ui-https:
+      rule: "Host(`open-web-ui.shatori.com`)"
+      entryPoints:
+        - websecure
+      tls:
+        certResolver: letsencrypt
+      service: open-web-ui-service
+
   middlewares:
     redirect-to-https:
       redirectScheme:
@@ -93,5 +109,11 @@ http:
       loadBalancer:
         servers:
           - url: "http://192.168.8.142:8081"
+        passHostHeader: true
+
+    open-web-ui-service:
+      loadBalancer:
+        servers:
+          - url: "http://192.168.8.142:3000"
         passHostHeader: true
 ```
