@@ -151,7 +151,7 @@
 **TrueNAS на non-ECC** — работает, но меньше защита от bit-flip ошибок в памяти.
 
 ```
-2 × 4TB Seagate IronWolf → Mirror → 4TB полезного
+2 × 4TB WD Ultrastar DC HC310 → Mirror → 4TB полезного
 ```
 
 **Почему Mirror:**

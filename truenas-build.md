@@ -8,7 +8,7 @@
 | **MBO** | Supermicro X11STL-iF (IPMI, 8 SATA, C246) | ~$80-100 (б/у Ali) |
 | **RAM** | Kingston DDR4 16GB ECC UDIMM | ~700-860 zł (новый) |
 | **Boot SSD** | 64GB SATA SSD (Kingston/Crucial/Samsung) | ~150-200 zł (новый) |
-| **HDD** | 2x Seagate IronWolf 4TB (7200 RPM) | ~1000-1200 zł (новый) |
+| **HDD** | 2x WD Ultrastar DC HC310 4TB (HUS726T4TALA6L4, 7200 RPM) | ~1510-1650 zł (новый) |
 | **Корпус** | Fractal Design Node 304 (Mini-ITX, 6x 3.5" bays) | ~320 zł (новый) |
 | **Кулер CPU** | Arctic Alpine 20 Plus / Noctua NH-L9i | ~100-150 zł |
 | **Блок питания** | 350-450W 80+ Bronze (Corsair CX, Seasonic) | ~200-300 zł |
@@ -25,7 +25,7 @@
 | CPU + MBO (б/у) | ~$130-170 |
 | RAM (новый) | ~700-860 zł |
 | Boot SSD (новый) | ~150-200 zł |
-| HDD x2 (новый) | ~1000-1200 zł |
+| HDD x2 (новый) | ~1510-1650 zł |
 | Корпус (новый) | ~320 zł |
 | Кулер CPU (новый) | ~100-150 zł |
 | БП 350-450W (новый) | ~200-300 zł |
@@ -83,7 +83,7 @@
 ### Наш выбор: Старт с 2× Mirror
 
 ```
-2 × 4TB Seagate IronWolf → Mirror → 4TB полезного
+2 × 4TB WD Ultrastar DC HC310 → Mirror → 4TB полезного
 ```
 
 **Почему Mirror:**
@@ -166,7 +166,7 @@ Pool "storage"
 | **Motherboard** | Dell OptiPlex 7060 Tower (встроенный CPU) | $120-150 | eBay |
 | **RAM** | 32 GB DDR4 ECC (2x16GB) | $40-60 | eBay, AliExpress |
 | **Boot SSD** | 64 GB SATA SSD | $15-20 | Amazon |
-| **Диски** | 4x 4 TB Seagate IronWolf | $80-100 (б/у) | eBay |
+| **Диски** | 4x 4 TB WD Ultrastar DC HC310 | $80-100 (б/у) | eBay |
 | **HBA** | LSI 9207-8i (IT mode) | $25-35 | eBay |
 
 **Итого: ~$250-350**
@@ -201,7 +201,7 @@ Pool "storage"
 ### Диски
 
 - Тип: NAS-диски (7200 RPM)
-- Рекомендуются: Seagate IronWolf, WD Red Plus
+- Рекомендуются: WD Ultrastar DC HC310 4TB (HUS726T4TALA6L4)
 - Перед покупкой: проверь SMART статус
 - Старт: 4x 4TB в RAIDZ1 (~10.5 TB полезного)
 
